@@ -17,4 +17,12 @@ export const gameState = {
     aiPlayers: []
 };
 
+export const minimapState = {
+    x: 20,
+    y: 20,
+    isDragging: false,
+    dragOffsetX: 0,
+    dragOffsetY: 0
+};
+
 export const mouse = { x: 0, y: 0 };
