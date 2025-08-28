@@ -15,6 +15,12 @@ function setupInputHandlers() {
 
     // Mouse click for splitting
     canvas.addEventListener('click', (e) => {
+        const minimap = document.getElementById('minimap');
+        const minimapRect = minimap.getBoundingClientRect();
+        if (e.clientX >= minimapRect.left && e.clientX <= minimapRect.right &&
+            e.clientY >= minimapRect.top && e.clientY <= minimapRect.bottom) {
+            return;
+        }
         handlePlayerSplit();
     });
 
