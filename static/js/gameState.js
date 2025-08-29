@@ -14,7 +14,13 @@ export const gameState = {
         y: 0
     },
     food: [],
-    aiPlayers: []
+    aiPlayers: [],
+    minimap: {
+        x: 20,
+        y: 20,
+        isDragging: false,
+        dragOffset: { x: 0, y: 0 }
+    }
 };
 
 export const mouse = { x: 0, y: 0 };
