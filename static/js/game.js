@@ -24,6 +24,49 @@ function setupInputHandlers() {
     });
 }
 
+function setupMinimapDragHandlers() {
+    const minimapCanvas = document.getElementById('minimap');
+    
+    minimapCanvas.addEventListener('mousedown', (e) => {
+        e.stopPropagation();
+        
+        gameState.minimap.isDragging = true;
+        const rect = minimapCanvas.getBoundingClientRect();
+        gameState.minimap.dragOffset.x = e.clientX - rect.left;
+        gameState.minimap.dragOffset.y = e.clientY - rect.top;
+        
+        minimapCanvas.style.cursor = 'grabbing';
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+        if (!gameState.minimap.isDragging) return;
+        
+        e.preventDefault();
+        
+        const newX = e.clientX - gameState.minimap.dragOffset.x;
+        const newY = e.clientY - gameState.minimap.dragOffset.y;
+        
+        const maxX = window.innerWidth - minimapCanvas.width;
+        const maxY = window.innerHeight - minimapCanvas.height;
+        
+        gameState.minimap.position.x = Math.max(0, Math.min(newX, maxX));
+        gameState.minimap.position.y = Math.max(0, Math.min(newY, maxY));
+        
+        minimapCanvas.style.left = gameState.minimap.position.x + 'px';
+        minimapCanvas.style.top = gameState.minimap.position.y + 'px';
+        minimapCanvas.style.bottom = 'auto';
+    });
+    
+    document.addEventListener('mouseup', (e) => {
+        if (gameState.minimap.isDragging) {
+            gameState.minimap.isDragging = false;
+            minimapCanvas.style.cursor = 'grab';
+        }
+    });
+    
+    minimapCanvas.style.cursor = 'grab';
+}
+
 function checkCollisions() {
     handleFoodCollisions();
     handlePlayerAICollisions();
@@ -85,6 +128,9 @@ async function initGame() {
         
         setupInputHandlers();
         console.log('Input handlers set up');
+        
+        setupMinimapDragHandlers();
+        console.log('Minimap drag handlers set up');
         
         initEntities();
         console.log('Entities initialized');
