@@ -18,3 +18,11 @@ export const gameState = {
 };
 
 export const mouse = { x: 0, y: 0 };
+
+export const minimapDrag = {
+    isDragging: false,
+    startX: 0,
+    startY: 0,
+    offsetX: 20,
+    offsetY: 20
+};
