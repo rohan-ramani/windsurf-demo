@@ -1,5 +1,5 @@
 import { gameState, mouse } from './gameState.js';
-import { initRenderer, resizeCanvas, drawGame, drawMinimap, updateLeaderboard } from './renderer.js';
+import { initRenderer, resizeCanvas, drawGame, updateLeaderboard } from './renderer.js';
 import { updatePlayer, updateAI, initEntities, handlePlayerSplit } from './entities.js';
 import { handleFoodCollisions, handlePlayerAICollisions, handleAIAICollisions, respawnEntities } from './collisions.js';
 import { initUI } from './ui.js';
@@ -54,7 +54,6 @@ function gameLoop() {
     checkCollisions();
     updateLeaderboard();
     drawGame();
-    drawMinimap();
     requestAnimationFrame(gameLoop);
 }
 
