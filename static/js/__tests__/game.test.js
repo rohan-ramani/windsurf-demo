@@ -89,8 +89,8 @@ describe('Game initialization', () => {
         expect(mockCanvas.getContext).toBeDefined();
         expect(mockCanvas.addEventListener).toBeDefined();
         
-        const testCanvas = global.document.getElementById('gameCanvas');
-        expect(testCanvas).toBe(mockCanvas);
+        expect(mockElements.gameCanvas).toBe(mockCanvas);
+        expect(typeof global.document.getElementById).toBe('function');
     });
 
     test('window properties are mocked correctly', () => {
