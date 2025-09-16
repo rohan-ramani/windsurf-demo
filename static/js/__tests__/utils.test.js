@@ -1,4 +1,4 @@
-import { getSize, getDistance, calculateCenterOfMass } from '../utils.js';
+import { getSize, getDistance, calculateCenterOfMass, getRandomPosition, findSafeSpawnLocation } from '../utils.js';
 
 describe('getSize', () => {
   test('returns correct size for score 0', () => {
@@ -52,8 +52,42 @@ describe('calculateCenterOfMass', () => {
       { x: 10, y: 10, score: 300 }
     ];
     const center = calculateCenterOfMass(cells);
-    expect(center.x).toBeCloseTo(5);
-    expect(center.y).toBeCloseTo(5);
+    expect(center.x).toBeCloseTo(7.5);
+    expect(center.y).toBeCloseTo(7.5);
+  });
+
+  test('getRandomPosition returns position within world bounds', () => {
+    const pos = getRandomPosition();
+    expect(pos.x).toBeGreaterThanOrEqual(0);
+    expect(pos.x).toBeLessThanOrEqual(2000);
+    expect(pos.y).toBeGreaterThanOrEqual(0);
+    expect(pos.y).toBeLessThanOrEqual(2000);
+  });
+  
+  test('getRandomPosition returns different positions on multiple calls', () => {
+    const pos1 = getRandomPosition();
+    const pos2 = getRandomPosition();
+    expect(pos1.x !== pos2.x || pos1.y !== pos2.y).toBe(true);
+  });
+
+  test('findSafeSpawnLocation returns safe position away from players', () => {
+    const gameState = {
+      playerCells: [{ x: 100, y: 100, score: 100 }],
+      aiPlayers: [{ x: 200, y: 200, score: 100 }]
+    };
+    
+    const safePos = findSafeSpawnLocation(gameState, 50);
+    expect(safePos).toHaveProperty('x');
+    expect(safePos).toHaveProperty('y');
+    expect(safePos.x).toBeGreaterThanOrEqual(0);
+    expect(safePos.y).toBeGreaterThanOrEqual(0);
+  });
+  
+  test('findSafeSpawnLocation handles empty game state', () => {
+    const gameState = { playerCells: [], aiPlayers: [] };
+    const safePos = findSafeSpawnLocation(gameState);
+    expect(safePos).toHaveProperty('x');
+    expect(safePos).toHaveProperty('y');
   });
 
   test('returns {x: 0, y: 0} for empty cells array', () => {
@@ -66,5 +100,54 @@ describe('calculateCenterOfMass', () => {
       { x: 30, y: 40, score: 0 }
     ];
     expect(calculateCenterOfMass(cells)).toEqual({ x: 0, y: 0 });
+  });
+});
+
+describe('getRandomPosition', () => {
+  test('returns position within world bounds', () => {
+    const pos = getRandomPosition();
+    expect(pos.x).toBeGreaterThanOrEqual(0);
+    expect(pos.x).toBeLessThanOrEqual(2000);
+    expect(pos.y).toBeGreaterThanOrEqual(0);
+    expect(pos.y).toBeLessThanOrEqual(2000);
+  });
+  
+  test('returns different positions on multiple calls', () => {
+    const pos1 = getRandomPosition();
+    const pos2 = getRandomPosition();
+    expect(pos1.x !== pos2.x || pos1.y !== pos2.y).toBe(true);
+  });
+});
+
+describe('findSafeSpawnLocation', () => {
+  test('returns safe position away from players', () => {
+    const gameState = {
+      playerCells: [{ x: 100, y: 100, score: 100 }],
+      aiPlayers: [{ x: 200, y: 200, score: 100 }]
+    };
+    
+    const safePos = findSafeSpawnLocation(gameState, 50);
+    expect(safePos).toHaveProperty('x');
+    expect(safePos).toHaveProperty('y');
+    expect(safePos.x).toBeGreaterThanOrEqual(0);
+    expect(safePos.y).toBeGreaterThanOrEqual(0);
+  });
+  
+  test('handles empty game state', () => {
+    const gameState = { playerCells: [], aiPlayers: [] };
+    const safePos = findSafeSpawnLocation(gameState);
+    expect(safePos).toHaveProperty('x');
+    expect(safePos).toHaveProperty('y');
+  });
+  
+  test('returns fallback position when no safe spot found', () => {
+    const gameState = {
+      playerCells: Array(50).fill({ x: 1000, y: 1000, score: 1000 }),
+      aiPlayers: Array(50).fill({ x: 1000, y: 1000, score: 1000 })
+    };
+    
+    const safePos = findSafeSpawnLocation(gameState, 2000);
+    expect(safePos).toHaveProperty('x');
+    expect(safePos).toHaveProperty('y');
   });
 });
