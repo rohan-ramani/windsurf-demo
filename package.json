@@ -5,7 +5,12 @@
   "main": "app.py",
   "scripts": {
     "test": "jest",
-    "test:backend": "python -m pytest tests/ -v"
+    "test:backend": "python -m pytest tests/ -v",
+    "test:performance": "python -m pytest tests/test_performance.py -v",
+    "test:error-handling": "python -m pytest tests/test_error_handling.py -v",
+    "test:e2e": "python -m pytest tests/test_e2e.py -v",
+    "test:all": "npm run test && npm run test:backend && npm run test:performance",
+    "test:comprehensive": "npm run test:all && npm run test:error-handling && npm run test:e2e"
   },
   "devDependencies": {
     "@babel/core": "^7.23.2",
