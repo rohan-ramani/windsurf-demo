@@ -42,4 +42,45 @@ export function initUI() {
         document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : '');
         saveDarkMode(isDarkMode);
     });
+
+    const minimap = document.getElementById('minimap');
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    minimap.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        const rect = minimap.getBoundingClientRect();
+        dragOffset.x = e.clientX - rect.left;
+        dragOffset.y = e.clientY - rect.top;
+        minimap.style.cursor = 'grabbing';
+        e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        
+        const newX = e.clientX - dragOffset.x;
+        const newY = e.clientY - dragOffset.y;
+        
+        const maxX = window.innerWidth - minimap.offsetWidth;
+        const maxY = window.innerHeight - minimap.offsetHeight;
+        
+        const boundedX = Math.max(0, Math.min(newX, maxX));
+        const boundedY = Math.max(0, Math.min(newY, maxY));
+        
+        minimap.style.left = boundedX + 'px';
+        minimap.style.top = boundedY + 'px';
+        minimap.style.bottom = 'auto';
+        
+        e.preventDefault();
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            minimap.style.cursor = 'grab';
+        }
+    });
+
+    minimap.style.cursor = 'grab';
 }
